@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = ">=5.0,<6.0"
+# Build-time tool. obfy is only needed to PRODUCE the protected tree; it is not
+# imported by the running app (the native loader bundled into ./protected is).
+obfy = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"
+
+[scripts]
+build = "bash build.sh"
+serve = "python protected/manage.py runserver"
