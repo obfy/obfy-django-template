@@ -68,7 +68,18 @@ self-activating stub, the real code lives encrypted under `protected/__obfy__/`,
 and obfy's native loader is bundled in. Decryption happens in memory at import
 time; plaintext source never lands on disk.
 
-## Why the build flags matter (Django specifics)
+## Obfy level
+
+`obfy build` takes `--level 0–5`, a sophistication dial where each level does
+strictly more — `1` strips docstrings, `2` adds string mangling + dead code, `3`
+adds function-local renames, `4` adds cross-module public-name renames, and `5`
+adds native function compilation (eligible functions are lowered to obfy's own
+bytecode VM, so their CPython bytecode never ships). Reference:
+[obfuscation levels](https://docs.camouflage.network/obfy/guides/obfuscation-levels).
+
+**This template builds at `--level 3`** — high enough to obfuscate internals, but
+below cross-module public-name renaming so the framework's string-based lookups
+survive. Here's what would break at level 4+, and how `build.sh` keeps it safe.
 
 Django resolves a lot of things by **dotted string** — `INSTALLED_APPS`,
 `ROOT_URLCONF`, `DJANGO_SETTINGS_MODULE`, model labels like `"core.Quote"`,
